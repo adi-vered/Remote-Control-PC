@@ -6,14 +6,21 @@ import time
 
 from pynput import mouse
 
+port = 8853
+
+my_socket = socket.socket()
+my_socket.connect(("127.0.0.1", port))
+print("connected")
+
 def on_move(x, y, injected):
-    print(f'Pointer moved to {x,y}')
+    protocol.short_send(my_socket, f'MOVE,{x},{y}'.encode())
 
 def on_click(x, y, button, pressed, injected):
-    print(f'{'Pressed' if pressed else 'Released'} at {x, y}')
+    button_clicked = 'LEFT' if button == mouse.Button.left else 'RIGHT'
+    protocol.short_send(my_socket, f'{'PRESS' if pressed else 'RELEASE'},{button_clicked}'.encode())
 
 def on_scroll(x, y, dx, dy, injected):
-    print(f'Scrolled {'down' if dy < 0 else 'up'} at {x, y}, dx:{dx} dy: {dy}')
+    protocol.short_send(my_socket, f'SCROLL,{dx},{dy}'.encode())
 
 # Collect events until released
 with mouse.Listener(
@@ -22,10 +29,4 @@ with mouse.Listener(
         on_scroll=on_scroll) as listener:
     listener.join()
 
-# ...or, in a non-blocking fashion:
-listener = mouse.Listener(
-    on_move=on_move,
-    on_click=on_click,
-    on_scroll=on_scroll)
-listener.start()
-
+my_socket.close()
