@@ -1,25 +1,17 @@
 BUFFER_LENGTH = 1024
-MESSAGE_HEADER_LENGTH = 6
+MESSAGE_HEADER_LENGTH = 10
 UTF8 = "utf-8"
+BYTE_NUM = 4
+BYTE_ORDER = "big"
 
-def split_send(sock, data):
-    sock.send(str(len(data)).zfill(MESSAGE_HEADER_LENGTH).encode())
-    for i in range(0, len(data), BUFFER_LENGTH):
-        sock.send(data[i:i + BUFFER_LENGTH])
-
-def split_recv(sock):
-    request_length = int(sock.recv(MESSAGE_HEADER_LENGTH).decode())
-    request = "".encode()
-    while len(request) < request_length:
-        request += sock.recv(BUFFER_LENGTH)
-    return request
-
-def short_send(sock, data):
-    header = str(len(data)).zfill(MESSAGE_HEADER_LENGTH).encode()
-    sock.send(header)
+def send(sock, data):
+    sock.send(len(data).to_bytes(BYTE_NUM, byteorder=BYTE_ORDER, signed=False))
     sock.send(data)
 
-def short_recv(sock):
-    request_len = int(sock.recv(MESSAGE_HEADER_LENGTH).decode())
-    request = sock.recv(request_len)
-    return request
+def recv(sock):
+    request_len = int.from_bytes(sock.recv(BYTE_NUM), byteorder=BYTE_ORDER, signed=False)
+    total = b""
+    while len(total) < request_len:
+        part = sock.recv(BUFFER_LENGTH)
+        total += part
+    return total

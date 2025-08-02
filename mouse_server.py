@@ -42,7 +42,7 @@ def process_request(request):
 server_socket = server_manage.start_server(address)
 client_socket = server_manage.get_client(server_socket)
 while True:
-    request = protocol.short_recv(client_socket).decode()
+    request = protocol.recv(client_socket).decode()
     print(request)
     if request:
         process_request(request)

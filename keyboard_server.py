@@ -9,10 +9,10 @@ server_socket = server_manage.start_server(address)
 client_socket = server_manage.get_client(server_socket)
 with open("C://Users//User//Documents//vs code python//Remote Control PC//check.txt" , "w") as my_file:
     while True:
-        request = protocol.short_recv(client_socket).decode()
+        request = protocol.recv(client_socket).decode()
         if request:
             print(request)
-            keyboard.press_and_release(request)
+            # keyboard.press_and_release(request)
             my_file.write(request)
             my_file.flush()
     

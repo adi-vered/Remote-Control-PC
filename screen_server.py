@@ -1,5 +1,4 @@
 import socket
-import tkinter as tk
 import time
 import PIL.ImageGrab
 import protocol
@@ -18,7 +17,7 @@ address = ('0.0.0.0', port)
 server_socket:socket = server_manage.start_server(address)
 client_socket:socket = server_manage.get_client(server_socket)
 while True:
-    protocol.split_send(client_socket, take_screenshot())
+    client_socket.send(take_screenshot())
     time.sleep(0.1)
     
 server_socket.close()
