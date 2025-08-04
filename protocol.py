@@ -3,6 +3,7 @@ MESSAGE_HEADER_LENGTH = 10
 UTF8 = "utf-8"
 BYTE_NUM = 4
 BYTE_ORDER = "big"
+REST_BETWEEN_SCREENSHOTS = 0.1 # seconds
 
 def send(sock, data):
     sock.send(len(data).to_bytes(BYTE_NUM, byteorder=BYTE_ORDER, signed=False))
